@@ -4,6 +4,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { requireRole } from '@/lib/auth';
+import type { KlantInput } from '@/lib/schemas';
 import { parseKlantFormData } from '@/lib/schemas';
 import type { KlantFormState } from '@/components/KlantForm';
 
@@ -15,18 +16,22 @@ export async function maakKlantAction(
 
   const parsed = parseKlantFormData(formData);
 
-  if (!parsed.success) {
-    const fieldErrors: KlantFormState['fieldErrors'] = {};
-    for (const issue of parsed.error.issues) {
-      const key = issue.path[0] as keyof KlantFormState['fieldErrors'];
-      if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+if (!parsed.success) {
+  const fieldErrors: Partial<
+    Record<keyof KlantInput, string>
+  > = {};
+  for (const issue of parsed.error.issues) {
+    const key = issue.path[0] as keyof KlantInput;
+    if (key && !fieldErrors[key]) {
+      fieldErrors[key] = issue.message;
     }
-
-    return {
-      fieldErrors,
-      values: formDataToValues(formData),
-    };
   }
+
+  return {
+    fieldErrors,
+    values: formDataToValues(formData),
+  };
+}
 
   const supabase = await createClient();
   const data = parsed.data;

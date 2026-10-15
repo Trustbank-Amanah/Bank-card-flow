@@ -3,12 +3,19 @@ import Link from 'next/link';
 import { StatusBadge } from './StatusBadge';
 import type { Customer } from '@/lib/types';
 
+type Kolom =
+  | 'naam'
+  | 'id_nummer'
+  | 'additional_reference'
+  | 'tel'
+  | 'email'
+  | 'status'
+  | 'afhaaldatum';
+
 interface KlantTabelProps {
   klanten: Customer[];
   detailHref: (k: Customer) => string;
-  toonKolommen?: Array<
-    'naam' | 'id_nummer' | 'additional_reference' | 'tel' | 'email' | 'status' | 'afhaaldatum'
-  >;
+  toonKolommen?: Kolom[];
   legeTekst?: string;
 }
 
@@ -26,8 +33,8 @@ export function KlantTabel({
     );
   }
 
-  const show = (k: KlantTabelProps['toonKolommen'][number]) =>
-    toonKolommen.includes(k);
+      const show = (k: Kolom) => toonKolommen.includes(k);
+
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">

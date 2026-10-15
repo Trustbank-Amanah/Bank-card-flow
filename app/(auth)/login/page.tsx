@@ -1,6 +1,8 @@
 // app/(auth)/login/page.tsx
 import { loginWithAzure, loginWithEmail } from './actions';
 
+export const instant = false;
+
 interface LoginPageProps {
   searchParams: Promise<{ error?: string; message?: string }>;
 }
